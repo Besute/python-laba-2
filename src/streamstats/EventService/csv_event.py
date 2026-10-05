@@ -1,0 +1,2 @@
+class CsvEvent:
+    pass
