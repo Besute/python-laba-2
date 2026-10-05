@@ -9,5 +9,3 @@ class EventService:
         self._path = path
         self._type = type_
         self._output = output
-
-class
