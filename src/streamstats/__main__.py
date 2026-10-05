@@ -1,16 +1,17 @@
 import argparse
+import asyncio
 from streamstats.Server.server import Server
 from streamstats.parsers import BasicJsonParser
 
 class PostJson(BasicJsonParser):
-    def __init__(self, filename, format_, output, skip_invalid):
-        dct = {
-            "filename": filename,
-            "format": format_,
-            "output": output,
-            "skipInvalid": skip_invalid
-        }
-        self.curr_json = self.parse_to_json(dct)
+    def __init__(self, data):
+        self.curr_json = self.to_json(data)
+        self.method = "POST"
+
+class GetJson(BasicJsonParser):
+    def __init__(self, data):
+        self.curr_json = self.to_json(data)
+        self.method = "GET"
 
 def create_parser():
     parser = argparse.ArgumentParser(
@@ -28,16 +29,27 @@ def create_parser():
 
     return parser
 
-def main():
+async def main():
     parser = create_parser()
     args = parser.parse_args()
     try:
         if args.command == "analyze":
-            post_request = PostJson(args.FILE, args.format, args.output, args.skip_invalid)
-            server = Server(post_request)
+            post_request = PostJson(
+        {
+            "path": args.FILE,
+            "type": args.format,
+            "output": args.output,
+            "skipInvalid": args.skip_invalid,
+        }
+            )
+            print(post_request.__dict__)
+            server = Server()
+            print("SERVER CREATED")
+            await server.make_request(post_request)
+            print(server.__dict__)
     except Exception as e:
         print(e)
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())

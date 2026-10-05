@@ -1,15 +1,38 @@
+from asyncio import sleep
 from pathlib import Path
+from streamstats.parsers import BasicJsonParser
 
-class Server:
+class Server(BasicJsonParser):
     VALID_TYPES = ["csv", "jsonl"]
 
-    def __init__(self, path, type_, output, skip_invalid):
-        self._path = self.check_correct_filepath(path)
-        self._type = self.check_valid_type(type_)
-        self._output = output
-        self._skip_invalid = skip_invalid
-        self.__make_csv_event = self.bool_can_make_event("csv", type_)
-        self.__make_jsonl_event = self.bool_can_make_event("jsonl", type_)
+    def __init__(self):
+        self.handlers = {
+            "GET": self.method_get,
+            "POST": self.method_post,
+        }
+
+    async def make_request(self, request):
+        normal_data = self.from_json(request.curr_json)
+        await self.verify_handler(request.method, normal_data)
+
+    async def verify_handler(self, method, data=None):
+        handler = self.handlers.get(method)
+
+        if handler is None:
+            raise ValueError(f"Invalid method {method}")
+
+        self.check_valid_type(data.type)
+        self.check_valid_type(data.path)
+
+        res = handler(data)
+        await sleep(0)
+        return res
+
+    def method_get(self, data):
+        return data
+
+    def method_post(self, data):
+        return data
 
     # def make_jsonl_event(self):
     #     if not self.__make_jsonl_event:
@@ -22,9 +45,9 @@ class Server:
     #         # TODO: normal Error
     #         raise ValueError("You can't open this file with csv")
 
-    @classmethod
-    def bool_can_make_event(cls, value_goal, value_curr):
-        return value_goal == value_curr
+    # @classmethod
+    # def bool_can_make_event(cls, value_goal, value_curr):
+    #     return value_goal == value_curr
 
     @classmethod
     def check_valid_type(cls, value):
@@ -34,6 +57,8 @@ class Server:
 
     @classmethod
     def check_correct_filepath(cls, value):
-        if not Path(value).is_file():
+        curr_path = Path(__file__).resolve().parent.parent
+        curr_file = curr_path / value
+        if not curr_file.is_file():
             raise ValueError(f"Invalid filepath {value}. File does not exist")
         return value
