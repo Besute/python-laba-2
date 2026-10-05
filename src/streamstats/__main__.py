@@ -1,8 +1,8 @@
 import argparse
-import json
+from streamstats.Server.server import Server
+from streamstats.parsers import BasicJsonParser
 
-class PostJson:
-    curr_json = None
+class PostJson(BasicJsonParser):
     def __init__(self, filename, format_, output, skip_invalid):
         dct = {
             "filename": filename,
@@ -10,11 +10,7 @@ class PostJson:
             "output": output,
             "skipInvalid": skip_invalid
         }
-        self.curr_json = json.dumps(dct)
-
-    @property
-    def json(self):
-        return self.curr_json
+        self.curr_json = self.parse_to_json(dct)
 
 def create_parser():
     parser = argparse.ArgumentParser(
@@ -38,7 +34,7 @@ def main():
     try:
         if args.command == "analyze":
             post_request = PostJson(args.FILE, args.format, args.output, args.skip_invalid)
-            print(post_request.json)
+            server = Server(post_request)
     except Exception as e:
         print(e)
 
