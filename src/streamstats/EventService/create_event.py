@@ -1,11 +1,11 @@
-from pathlib import Path
+from .csv_event import CsvEvent
 
-class EventService:
-    _path = ""
-    _type = ""
-    _output = ""
 
-    def __init__(self, path, type_, output):
-        self._path = path
-        self._type = type_
-        self._output = output
+class EventService(CsvEvent):
+    def __init__(self, data):
+        self.path = data["path"]
+        self.type = data["type"]
+        self.output = data["output"]
+        self.skipInvalid = data["skipInvalid"]
+        print(self.path)
+        self.read_csv(self.path)

@@ -1,9 +1,13 @@
 from asyncio import sleep
 from pathlib import Path
+
+from streamstats.EventService.create_event import EventService
 from streamstats.parsers import BasicJsonParser
+
 
 class Server(BasicJsonParser):
     VALID_TYPES = ["csv", "jsonl"]
+    answer = None
 
     def __init__(self):
         self.handlers = {
@@ -20,9 +24,11 @@ class Server(BasicJsonParser):
 
         if handler is None:
             raise ValueError(f"Invalid method {method}")
+        if data is None:
+            raise ValueError("Invalid data")
 
-        self.check_valid_type(data.type)
-        self.check_valid_type(data.path)
+        self.check_valid_type(data["type"])
+        data["path"] = self.check_correct_filepath(data["path"])
 
         res = handler(data)
         await sleep(0)
@@ -32,7 +38,8 @@ class Server(BasicJsonParser):
         return data
 
     def method_post(self, data):
-        return data
+        event = EventService(data)
+        print(event)
 
     # def make_jsonl_event(self):
     #     if not self.__make_jsonl_event:
@@ -58,7 +65,7 @@ class Server(BasicJsonParser):
     @classmethod
     def check_correct_filepath(cls, value):
         curr_path = Path(__file__).resolve().parent.parent
-        curr_file = curr_path / value
+        curr_file = curr_path / value[0]
         if not curr_file.is_file():
             raise ValueError(f"Invalid filepath {value}. File does not exist")
-        return value
+        return curr_file

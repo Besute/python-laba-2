@@ -1,7 +1,7 @@
 import json
 
-class BasicJsonParser:
 
+class BasicJsonParser:
     @classmethod
     def to_json(cls, data):
         return json.dumps(data)
