@@ -14,5 +14,5 @@ class JsonlEvent(BasicJsonParser):
                     data_of_file.append(data)
                     line = jsonfile.readline()
                 final_data.append(data_of_file)
-        data_to_go = {"Headers": None, "Data": final_data}
+        data_to_go = {"headers": None, "data": final_data}
         return data_to_go

@@ -19,5 +19,5 @@ class CsvEvent:
                     line = csvfile.readline()
             all_headers.append(headers)
             all_data.append(data)
-        data_to_go = {"Headers": all_headers, "Data": all_data}
+        data_to_go = {"headers": all_headers, "data": all_data}
         return data_to_go
