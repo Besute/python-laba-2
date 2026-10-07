@@ -38,7 +38,7 @@ async def main():
     args = parser.parse_args()
     try:
         if args.command == "analyze":
-            post_request = PostJson(
+            get_request = GetJson(
                 {
                     "path": args.FILE,
                     "type": args.format,
@@ -46,8 +46,12 @@ async def main():
                     "skipInvalid": args.skip_invalid,
                 }
             )
-            server = Server()
             print("Connecting...")
+            server = Server()
+            print("Connected!")
+            read_data = await server.make_request(get_request)
+            print(read_data)
+            post_request = PostJson({"data": read_data})
             await server.make_request(post_request)
     except Exception as e:
         print(e)
