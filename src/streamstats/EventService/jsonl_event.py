@@ -23,7 +23,7 @@ class JsonlEvent(BasicJsonParser):
                     data_of_file.append(line)
                     line = jsonfile.readline()
                 final_data.append(data_of_file)
-        data_to_go = self.to_json({"headers": None, "data": final_data})
+        data_to_go = {"headers": None, "data": final_data}
         return data_to_go
 
     @property

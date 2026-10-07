@@ -9,8 +9,8 @@ class CsvEvent(BasicJsonParser):
         self.__data_in_file = self.read_csv()
 
     def analyze(self):
-        analyzator = Analyzator(self.__data_in_file)
-        analyzator.analyze_csv()
+        analyzator = Analyzator(self.__data_in_file, self._bool_skip_invalid)
+        return analyzator.analyze_csv()
 
     def read_csv(self):
         all_headers = []
@@ -30,5 +30,5 @@ class CsvEvent(BasicJsonParser):
                     line = csvfile.readline()
             all_headers.append(headers)
             all_data.append(data)
-        data_to_go = self.to_json({"headers": all_headers, "data": all_data})
+        data_to_go = {"headers": all_headers, "data": all_data}
         return data_to_go
