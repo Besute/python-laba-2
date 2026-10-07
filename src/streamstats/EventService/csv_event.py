@@ -1,4 +1,4 @@
-from streamstats.Analyzator.analysis import Analyzator
+from streamstats.Analyzator.analysis import CsvAnalysis
 from streamstats.Parsers.parsers import BasicJsonParser
 
 
@@ -9,7 +9,7 @@ class CsvEvent(BasicJsonParser):
         self.__data_in_file = self.read_csv()
 
     def analyze(self):
-        analyzator = Analyzator(self.__data_in_file, self._bool_skip_invalid)
+        analyzator = CsvAnalysis(self.__data_in_file, self._bool_skip_invalid)
         return analyzator.analyze_csv()
 
     def read_csv(self):

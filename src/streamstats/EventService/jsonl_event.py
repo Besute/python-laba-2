@@ -1,4 +1,4 @@
-from streamstats.Analyzator.analysis import Analyzator
+from streamstats.Analyzator.analysis import JsnolAnalysis
 from streamstats.Parsers.parsers import BasicJsonParser
 
 
@@ -10,7 +10,7 @@ class JsonlEvent(BasicJsonParser):
         self.__data_in_file = self.read_jsonl()
 
     def analyze(self):
-        analyzator = Analyzator(self.__data_in_file)
+        analyzator = JsnolAnalysis(self.__data_in_file, self._bool_skip_invalid)
         return analyzator.analyze_jsonl()
 
     def read_jsonl(self):
