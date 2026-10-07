@@ -2,7 +2,7 @@ from asyncio import sleep
 from pathlib import Path
 
 from streamstats.EventService.create_event import EventService
-from streamstats.parsers import BasicJsonParser
+from streamstats.Parsers.parsers import BasicJsonParser
 
 
 class Server(BasicJsonParser):
@@ -38,6 +38,7 @@ class Server(BasicJsonParser):
     @classmethod
     def __method_get(cls, data):
         event = EventService(data)
+        event.create_event()
         cls.answers[cls.curr_id] = event
         cls.curr_id += 1
         return event.data

@@ -1,8 +1,8 @@
 import argparse
 import asyncio
 
+from streamstats.Parsers.parsers import BasicJsonParser
 from streamstats.Server.server import Server
-from streamstats.parsers import BasicJsonParser
 
 
 class PostJson(BasicJsonParser):

@@ -2,25 +2,30 @@ from .csv_event import CsvEvent
 from .jsonl_event import JsonlEvent
 
 
-class EventService(CsvEvent, JsonlEvent):
+class EventService:
     def __init__(self, data):
-        self.path = data["path"]
+        self.paths = data["path"]
         self.type = data["type"]
         self.output = data["output"]
         self.skipInvalid = data["skipInvalid"]
-        self.data = self.__read()
+        self._handlers = {
+            "csv": self.process_csv,
+            "jsonl": self.process_jsonl,
+        }
 
-    def __read(self):
-        if self.type == "csv":
-            return self.read_csv(self.path)
-        elif self.type == "jsonl":
-            return self.read_jsonl(self.path)
-        return None
+    def create_event(self):
+        handler = self._handlers.get(self.type)
+        if handler is None:
+            raise TypeError("Invalid event type")
 
-    @property
-    def data(self):
-        return self.__data
+        return handler(self.paths, self.skipInvalid)
 
-    @data.setter
-    def data(self, value):
-        self.__data = value
+    @classmethod
+    def process_csv(cls, paths, skip_invalid=False):
+        event = CsvEvent(paths, skip_invalid)
+        return event.analyze()
+
+    @classmethod
+    def process_jsonl(cls, paths, skip_invalid=False):
+        event = JsonlEvent(paths, skip_invalid)
+        return event.analyze()
