@@ -73,6 +73,7 @@ class CsvAnalysis(Analyzator):
                 skip = self._bool_skip_row(headers[file_idx], data[file_idx][row])
                 if skip:
                     continue
+                self.analyzed_data["all_data"] += 1
                 for curr_cell in range(len(data[file_idx][row])):
                     curr_cell_data = data[file_idx][row][curr_cell]
                     curr_header = headers[file_idx][curr_cell]
@@ -121,6 +122,7 @@ class JsnolAnalysis(Analyzator):
                 skip = self._bool_skip_row(list(data[file_idx][row].keys()), list(data[file_idx][row].values()))
                 if skip:
                     continue
+                self.analyzed_data["all_data"] += 1
                 for key, value in data[file_idx][row].items():
                     if key == self.OBLIGATORY_HEADERS[0]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[0]].append(datetime.fromisoformat(value))
