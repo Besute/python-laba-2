@@ -68,7 +68,7 @@ class CsvAnalysis(Analyzator):
         headers = self._data["headers"]
         data = self._data["data"]
         for file_idx in range(len(data)):
-            self.check_table_headers(headers[file_idx])
+            self._check_table_headers(headers[file_idx])
             for row in range(len(data[file_idx])):
                 skip = self._bool_skip_row(headers[file_idx], data[file_idx][row])
                 if skip:
@@ -91,7 +91,7 @@ class CsvAnalysis(Analyzator):
         return self.analyzed_data
 
     @classmethod
-    def check_table_headers(cls, headers):
+    def _check_table_headers(cls, headers):
         was_found = {
             "timestamp": False,
             "level": False,

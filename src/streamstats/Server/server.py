@@ -16,7 +16,7 @@ class Server(BasicJsonParser):
             "POST": self.__method_post,
         }
 
-    async def make_request(self, request):
+    async def _make_request(self, request):
         normal_data = self.from_json(request.curr_json)
         return await self.__verify_handler(request.method, normal_data)
 
