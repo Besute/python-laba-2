@@ -39,9 +39,7 @@ class Server(BasicJsonParser):
     def __method_get(cls, data):
         event = EventService(data)
         event.create_event()
-        cls.answers[cls.curr_id] = event
-        cls.curr_id += 1
-        return event.data
+        return event.analyzed_data
 
     @classmethod
     def __method_post(cls, data):

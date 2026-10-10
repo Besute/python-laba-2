@@ -87,7 +87,6 @@ class CsvAnalysis(Analyzator):
                     else:
                         self._add_new_col(curr_header)
                         self.analyzed_data["other"][curr_header].append(curr_cell_data)
-        print(self.analyzed_data)
         return self.analyzed_data
 
     @classmethod
@@ -118,6 +117,44 @@ class JsnolAnalysis(Analyzator):
         data = self._data["data"]
         for file_idx in range(len(data)):
             for row in range(len(data[file_idx])):
+                self._check_row_oblig_cells(data[file_idx][row])
+                skip = self._bool_skip_row(list(data[file_idx][row].keys()), list(data[file_idx][row].values()))
+                if skip:
+                    continue
                 for key, value in data[file_idx][row].items():
-                    print(key, value)
-        return {}
+                    if key == self.OBLIGATORY_HEADERS[0]:
+                        self.analyzed_data[self.OBLIGATORY_HEADERS[0]].append(datetime.fromisoformat(value))
+                    elif key == self.OBLIGATORY_HEADERS[1]:
+                        self.analyzed_data[self.OBLIGATORY_HEADERS[1]].append(value)
+                    elif key == self.OBLIGATORY_HEADERS[2]:
+                        self.analyzed_data[self.OBLIGATORY_HEADERS[2]].append(value)
+                    elif key == self.OBLIGATORY_HEADERS[3]:
+                        self.analyzed_data[self.OBLIGATORY_HEADERS[3]].append(value)
+                    else:
+                        self._add_new_col(key)
+                        self.analyzed_data["other"][key].append(value)
+        return self.analyzed_data
+
+    @classmethod
+    def _check_row_oblig_cells(cls, row):
+        was_found = {
+            "timestamp": False,
+            "level": False,
+            "source": False,
+            "message": False,
+        }
+        for key, item in row.items():
+            if key == "timestamp":
+                was_found["timestamp"] = True
+            elif key == "level":
+                was_found["level"] = True
+            elif key == "source":
+                was_found["source"] = True
+            elif key == "message":
+                was_found["message"] = True
+        error_fields = []
+        for key in was_found.keys():
+            if not was_found[key]:
+                error_fields.append(key)
+        if len(error_fields) > 0:
+            raise OmitObligatoryFieldError(f"These fields were omit in one of your JSONL rows: {error_fields}")

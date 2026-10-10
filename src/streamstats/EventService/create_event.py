@@ -3,6 +3,8 @@ from .jsonl_event import JsonlEvent
 
 
 class EventService:
+    analyzed_data = None
+
     def __init__(self, data):
         self.paths = data["path"]
         self.type = data["type"]
@@ -20,12 +22,10 @@ class EventService:
 
         return handler(self.paths, self.skipInvalid)
 
-    @classmethod
-    def process_csv(cls, paths, skip_invalid=False):
+    def process_csv(self, paths, skip_invalid=False):
         event = CsvEvent(paths, skip_invalid)
-        return event.analyze()
+        self.analyzed_data = event.analyze()
 
-    @classmethod
-    def process_jsonl(cls, paths, skip_invalid=False):
+    def process_jsonl(self, paths, skip_invalid=False):
         event = JsonlEvent(paths, skip_invalid)
-        return event.analyze()
+        self.analyzed_data = event.analyze()
