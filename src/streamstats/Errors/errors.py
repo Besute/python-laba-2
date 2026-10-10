@@ -4,3 +4,7 @@ class OmitObligatoryFieldError(Exception):
 
 class WrongPathError(Exception):
     pass
+
+
+class WrongObligatoryCellError(Exception):
+    pass
