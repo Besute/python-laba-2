@@ -1,4 +1,4 @@
-from streamstats.Analyzator.analysis import CsvAnalysis
+from streamstats.AnalyzeService.analysis import CsvAnalysis
 from streamstats.Parsers.parsers import BasicJsonParser
 
 

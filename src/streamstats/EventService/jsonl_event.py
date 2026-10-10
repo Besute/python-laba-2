@@ -1,4 +1,4 @@
-from streamstats.Analyzator.analysis import JsnolAnalysis
+from streamstats.AnalyzeService.analysis import JsnolAnalysis
 from streamstats.Parsers.parsers import BasicJsonParser
 
 
