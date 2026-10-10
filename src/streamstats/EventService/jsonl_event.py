@@ -20,6 +20,7 @@ class JsonlEvent(BasicJsonParser):
                 line = jsonfile.readline()
                 data_of_file = []
                 while line:
+                    line = self.from_json(line)
                     data_of_file.append(line)
                     line = jsonfile.readline()
                 final_data.append(data_of_file)
