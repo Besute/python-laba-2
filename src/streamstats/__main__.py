@@ -35,6 +35,7 @@ def create_parser():
     )
     analyze_parser.add_argument("--output", type=str, default="OUTPUT.csv", help="output file")
     analyze_parser.add_argument("--skip-invalid", action="store_true", help="skip invalid rows")
+    # analyze_parser.add_argument("--add-to-prev-data", action="store_true", help="add new data to previous data", default=False)
 
     return parser
 
@@ -48,11 +49,10 @@ async def main():
                 {
                     "path": args.FILE,
                     "type": args.format,
-                    "output": args.output,
                     "skipInvalid": args.skip_invalid,
                 }
             )
-            server = Server()
+            server = Server(args.output)
             analyzed_data = await server.make_request(get_request)
             post_request = PostJson({"data": analyzed_data})
             await server.make_request(post_request)

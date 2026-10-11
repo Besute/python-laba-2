@@ -8,7 +8,6 @@ class EventService:
     def __init__(self, data):
         self.paths = data["path"]
         self.type = data["type"]
-        self.output = data["output"]
         self.skipInvalid = data["skipInvalid"]
         self._handlers = {
             "csv": self.process_csv,

@@ -22,7 +22,8 @@ class Analyzator:
             "other": {},
             "all_data": 0,
             "warnings": warnings,
-            "acc_of_every": {},
+            "acc_of_every_source": {},
+            "acc_of_every_level": {},
             "minmax_date": (),
         }
 
@@ -83,16 +84,21 @@ class CsvAnalysis(Analyzator):
                         self.analyzed_data[self.OBLIGATORY_HEADERS[0]].append(curr_cell_data)
                     elif curr_header == self.OBLIGATORY_HEADERS[1]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[1]].append(curr_cell_data)
-                        if curr_cell_data not in self.analyzed_data["acc_of_every"]:
-                            self.analyzed_data["acc_of_every"][curr_cell_data] = 0
-                        self.analyzed_data["acc_of_every"][curr_cell_data] += 1
+                        if curr_cell_data not in self.analyzed_data["acc_of_every_level"]:
+                            self.analyzed_data["acc_of_every_level"][curr_cell_data] = 0
+                        self.analyzed_data["acc_of_every_level"][curr_cell_data] += 1
                     elif curr_header == self.OBLIGATORY_HEADERS[2]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[2]].append(curr_cell_data)
+                        if curr_cell_data not in self.analyzed_data["acc_of_every_source"]:
+                            self.analyzed_data["acc_of_every_source"][curr_cell_data] = 0
+                        self.analyzed_data["acc_of_every_source"][curr_cell_data] += 1
                     elif curr_header == self.OBLIGATORY_HEADERS[3]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[3]].append(curr_cell_data)
                     else:
                         self._add_new_col(curr_header)
                         self.analyzed_data["other"][curr_header].append(curr_cell_data)
+        correct_date = list(map(datetime.fromisoformat, self.analyzed_data["timestamp"]))
+        self.analyzed_data["minmax_date"] = min(correct_date).isoformat(), max(correct_date).isoformat()
         return self.analyzed_data
 
     @classmethod
@@ -133,16 +139,21 @@ class JsnolAnalysis(Analyzator):
                         self.analyzed_data[self.OBLIGATORY_HEADERS[0]].append(value)
                     elif key == self.OBLIGATORY_HEADERS[1]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[1]].append(value)
-                        if value not in self.analyzed_data["acc_of_every"]:
-                            self.analyzed_data["acc_of_every"][value] = 0
-                        self.analyzed_data["acc_of_every"][value] += 1
+                        if value not in self.analyzed_data["acc_of_every_level"]:
+                            self.analyzed_data["acc_of_every_level"][value] = 0
+                        self.analyzed_data["acc_of_every_level"][value] += 1
                     elif key == self.OBLIGATORY_HEADERS[2]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[2]].append(value)
+                        if value not in self.analyzed_data["acc_of_every_source"]:
+                            self.analyzed_data["acc_of_every_source"][value] = 0
+                        self.analyzed_data["acc_of_every_source"][value] += 1
                     elif key == self.OBLIGATORY_HEADERS[3]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[3]].append(value)
                     else:
                         self._add_new_col(key)
                         self.analyzed_data["other"][key].append(value)
+        correct_date = list(map(datetime.fromisoformat, self.analyzed_data["timestamp"]))
+        self.analyzed_data["minmax_date"] = min(correct_date).isoformat(), max(correct_date).isoformat()
         return self.analyzed_data
 
     @classmethod

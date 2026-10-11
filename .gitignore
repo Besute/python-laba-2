@@ -1,3 +1,4 @@
 .idea
 src/streamstats/data
 **/__pycache__
+src/streamstats/output/*

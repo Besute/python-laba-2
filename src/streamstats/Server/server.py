@@ -10,10 +10,9 @@ from streamstats.ReportService.reporter import ReportService
 
 class Server(BasicJsonParser):
     VALID_TYPES = ["csv", "jsonl"]
-    curr_id = 1
-    answers = {}
 
-    def __init__(self):
+    def __init__(self, output):
+        self.output = output
         self._handlers = {
             "GET": self.__method_get,
             "POST": self.__method_post,
@@ -33,7 +32,8 @@ class Server(BasicJsonParser):
         if method == "GET":
             self._check_valid_type(data["type"])
             data["path"] = self._check_correct_filepath(data["path"], data["type"])
-
+        else:
+            data["output"] = self.output
         res = handler(data)
         await sleep(0)
         return res
@@ -47,7 +47,7 @@ class Server(BasicJsonParser):
     @classmethod
     def __method_post(cls, data):
         reporter = ReportService(data["data"])
-        print(reporter._data)
+        reporter.make_report(data["output"])
 
     @classmethod
     def _check_valid_type(cls, value):
