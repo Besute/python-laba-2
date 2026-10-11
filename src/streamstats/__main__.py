@@ -53,9 +53,9 @@ async def main():
                 }
             )
             server = Server()
-            analyzed_data = await server._make_request(get_request)
+            analyzed_data = await server.make_request(get_request)
             post_request = PostJson({"data": analyzed_data})
-            await server._make_request(post_request)
+            await server.make_request(post_request)
     except Exception as e:
         print(e)
 

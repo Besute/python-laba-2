@@ -15,13 +15,15 @@ class Analyzator:
         if bool_skip_invalid:
             warnings = []
         self.analyzed_data = {
-            "all_data": 0,
-            "warnings": warnings,
             self.OBLIGATORY_HEADERS[0]: [],
             self.OBLIGATORY_HEADERS[1]: [],
             self.OBLIGATORY_HEADERS[2]: [],
             self.OBLIGATORY_HEADERS[3]: [],
             "other": {},
+            "all_data": 0,
+            "warnings": warnings,
+            "acc_of_every": {},
+            "minmax_date": (),
         }
 
     def _add_new_col(self, name):
@@ -81,6 +83,9 @@ class CsvAnalysis(Analyzator):
                         self.analyzed_data[self.OBLIGATORY_HEADERS[0]].append(curr_cell_data)
                     elif curr_header == self.OBLIGATORY_HEADERS[1]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[1]].append(curr_cell_data)
+                        if curr_cell_data not in self.analyzed_data["acc_of_every"]:
+                            self.analyzed_data["acc_of_every"][curr_cell_data] = 0
+                        self.analyzed_data["acc_of_every"][curr_cell_data] += 1
                     elif curr_header == self.OBLIGATORY_HEADERS[2]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[2]].append(curr_cell_data)
                     elif curr_header == self.OBLIGATORY_HEADERS[3]:
@@ -125,9 +130,12 @@ class JsnolAnalysis(Analyzator):
                 self.analyzed_data["all_data"] += 1
                 for key, value in data[file_idx][row].items():
                     if key == self.OBLIGATORY_HEADERS[0]:
-                        self.analyzed_data[self.OBLIGATORY_HEADERS[0]].append(datetime.fromisoformat(value))
+                        self.analyzed_data[self.OBLIGATORY_HEADERS[0]].append(value)
                     elif key == self.OBLIGATORY_HEADERS[1]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[1]].append(value)
+                        if value not in self.analyzed_data["acc_of_every"]:
+                            self.analyzed_data["acc_of_every"][value] = 0
+                        self.analyzed_data["acc_of_every"][value] += 1
                     elif key == self.OBLIGATORY_HEADERS[2]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[2]].append(value)
                     elif key == self.OBLIGATORY_HEADERS[3]:

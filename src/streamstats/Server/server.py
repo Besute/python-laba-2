@@ -1,3 +1,5 @@
+import re
+
 from asyncio import sleep
 from pathlib import Path
 
@@ -17,20 +19,20 @@ class Server(BasicJsonParser):
             "POST": self.__method_post,
         }
 
-    async def _make_request(self, request):
+    async def make_request(self, request):
         normal_data = self.from_json(request.curr_json)
         return await self.__verify_handler(request.method, normal_data)
 
     async def __verify_handler(self, method, data=None):
         handler = self._handlers.get(method)
-
         if handler is None:
             raise ValueError(f"Invalid method {method}")
         if data is None:
             raise ValueError("Invalid data")
 
-        self._check_valid_type(data["type"])
-        data["path"] = self._check_correct_filepath(data["path"])
+        if method == "GET":
+            self._check_valid_type(data["type"])
+            data["path"] = self._check_correct_filepath(data["path"], data["type"])
 
         res = handler(data)
         await sleep(0)
@@ -44,8 +46,8 @@ class Server(BasicJsonParser):
 
     @classmethod
     def __method_post(cls, data):
-        reporter = ReportService(data)
-        print(reporter)
+        reporter = ReportService(data["data"])
+        print(reporter._data)
 
     @classmethod
     def _check_valid_type(cls, value):
@@ -54,11 +56,16 @@ class Server(BasicJsonParser):
         return value
 
     @classmethod
-    def _check_correct_filepath(cls, value):
+    def _check_correct_filepath(cls, value, type_):
         correct_files = []
+        mask = "\\.[a-zA-Z]*"
+
         for file in value:
             curr_path = Path(__file__).resolve().parent.parent
             curr_file = curr_path / file
+            after_dot = re.search(mask, file).group().replace(".", "")
+            if after_dot != type_:
+                raise ValueError(f"Invalid file extension: you have {type_}, but you need {after_dot}")
             if not curr_file.is_file():
                 raise ValueError(f"Invalid filepath {file}. File does not exist")
             correct_files.append(curr_file)
