@@ -3,6 +3,7 @@ from pathlib import Path
 
 from streamstats.EventService.create_event import EventService
 from streamstats.Parsers.parsers import BasicJsonParser
+from streamstats.ReportService.reporter import ReportService
 
 
 class Server(BasicJsonParser):
@@ -43,7 +44,8 @@ class Server(BasicJsonParser):
 
     @classmethod
     def __method_post(cls, data):
-        pass
+        reporter = ReportService(data)
+        print(reporter)
 
     @classmethod
     def _check_valid_type(cls, value):

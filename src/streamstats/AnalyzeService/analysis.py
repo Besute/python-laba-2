@@ -78,7 +78,7 @@ class CsvAnalysis(Analyzator):
                     curr_cell_data = data[file_idx][row][curr_cell]
                     curr_header = headers[file_idx][curr_cell]
                     if curr_header == self.OBLIGATORY_HEADERS[0]:
-                        self.analyzed_data[self.OBLIGATORY_HEADERS[0]].append(datetime.fromisoformat(curr_cell_data))
+                        self.analyzed_data[self.OBLIGATORY_HEADERS[0]].append(curr_cell_data)
                     elif curr_header == self.OBLIGATORY_HEADERS[1]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[1]].append(curr_cell_data)
                     elif curr_header == self.OBLIGATORY_HEADERS[2]:

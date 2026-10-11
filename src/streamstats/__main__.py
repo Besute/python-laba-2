@@ -10,11 +10,17 @@ class PostJson(BasicJsonParser):
         self.curr_json = self.to_json(data)
         self.method = "POST"
 
+    def __str__(self):
+        return f"{self.method, self.curr_json}"
+
 
 class GetJson(BasicJsonParser):
     def __init__(self, data):
         self.curr_json = self.to_json(data)
         self.method = "GET"
+
+    def __str__(self):
+        return f"{self.method, self.curr_json}"
 
 
 def create_parser():
@@ -46,11 +52,8 @@ async def main():
                     "skipInvalid": args.skip_invalid,
                 }
             )
-            print("Connecting...")
             server = Server()
-            print("Connected!")
             analyzed_data = await server._make_request(get_request)
-            print(analyzed_data)
             post_request = PostJson({"data": analyzed_data})
             await server._make_request(post_request)
     except Exception as e:
