@@ -8,3 +8,7 @@ class WrongPathError(Exception):
 
 class WrongObligatoryCellError(Exception):
     pass
+
+
+class ParserCreationError(Exception):
+    pass

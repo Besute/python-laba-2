@@ -4,6 +4,8 @@ import asyncio
 from streamstats.Parsers.parsers import BasicJsonParser
 from streamstats.Server.server import Server
 
+from .Errors.errors import ParserCreationError
+
 
 class PostJson(BasicJsonParser):
     def __init__(self, data):
@@ -57,7 +59,7 @@ async def main():
             post_request = PostJson({"data": analyzed_data})
             await server.make_request(post_request)
     except Exception as e:
-        print(e)
+        ParserCreationError(f"Something went wrong: {e}")
 
 
 if __name__ == "__main__":
