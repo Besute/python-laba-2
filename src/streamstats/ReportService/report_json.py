@@ -4,16 +4,19 @@ from pathlib import Path
 
 
 class JsonReport:
+    STANDARD_FILEPATH = "output/REPORT.json"
+
     def __init__(self, data, output):
         self._data = data
-        self.__output_path = Path(__file__).resolve().parent.parent.joinpath("output/" + output)
+        self.__output_path = Path(__file__).resolve().parent.parent.joinpath(output)
         self._filename = output
         self.create_file()
 
     def create_file(self):
-        path_of_outputdir = Path(__file__).resolve().parent.parent.joinpath("output")
-        if not path_of_outputdir.exists():
-            path_of_outputdir.mkdir(parents=True, exist_ok=True)
+        if self._filename == self.STANDARD_FILEPATH:
+            path_of_outputdir = Path(__file__).resolve().parent.parent.joinpath("output")
+            if not path_of_outputdir.exists():
+                path_of_outputdir.mkdir(parents=True, exist_ok=True)
         if not self.__output_path.exists():
             self.__output_path.touch()
 

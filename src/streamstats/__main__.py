@@ -35,7 +35,7 @@ def create_parser():
     analyze_parser.add_argument(
         "--format", type=str, required=True, choices=["csv", "jsonl"], help="format of input files"
     )
-    analyze_parser.add_argument("--output", type=str, default="OUTPUT.csv", help="output file")
+    analyze_parser.add_argument("--output", type=str, default="output/REPORT.json", help="output file")
     analyze_parser.add_argument("--skip-invalid", action="store_true", help="skip invalid rows")
     # analyze_parser.add_argument("--add-to-prev-data", action="store_true", help="add new data to previous data", default=False)
 
