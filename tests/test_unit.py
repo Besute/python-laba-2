@@ -3,8 +3,10 @@ from pathlib import Path
 import awaiting_result
 import pytest
 
+from streamstats.AnalyzeService.analysis import Analyzator
 from streamstats.Errors.errors import WrongObligatoryCellError
 from streamstats.Errors.errors import WrongPathError
+from streamstats.EventService.create_event import EventService
 from streamstats.EventService.csv_event import CsvEvent
 from streamstats.EventService.jsonl_event import JsonlEvent
 from streamstats.Server.server import Server
@@ -50,21 +52,33 @@ async def test_server_get_request_unexisting_file():
 
 def test_csv_event():
     event = CsvEvent([DATA_DIR / "input.csv"], True)
-    assert event.analyze() == awaiting_result.CSV_RES
+    assert event.read() == awaiting_result.CSV_RES
 
 
 def test_jsonl_event():
     event = JsonlEvent([DATA_DIR / "input.jsonl"], True)
-    assert event.analyze() == awaiting_result.JSONL_RES
+    assert event.read() == awaiting_result.JSONL_RES
 
 
 def test_csv_event_incorrect():
-    event = CsvEvent([DATA_DIR / "input.csv"], False)
+    data = {
+        "path": [DATA_DIR / "input.csv"],
+        "skipInvalid": "false",
+        "type": "csv",
+    }
+    event = EventService(data)
+    analyzator = Analyzator(False)
     with pytest.raises(WrongObligatoryCellError):
-        event.analyze()
+        analyzator.analyze(event.data_good_format)
 
 
 def test_jsonl_event_incorrect():
-    event = JsonlEvent([DATA_DIR / "input.jsonl"], False)
+    data = {
+        "path": [DATA_DIR / "input.jsonl"],
+        "skipInvalid": "false",
+        "type": "jsonl",
+    }
+    event = EventService(data)
+    analyzator = Analyzator(False)
     with pytest.raises(WrongObligatoryCellError):
-        event.analyze()
+        analyzator.analyze(event.data_good_format)

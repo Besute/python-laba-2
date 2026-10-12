@@ -14,6 +14,9 @@ class Analyzator:
             warnings = []
         self.analyzed_data = {
             self.OBLIGATORY_HEADERS[0]: [],
+            self.OBLIGATORY_HEADERS[1]: [],
+            self.OBLIGATORY_HEADERS[2]: [],
+            self.OBLIGATORY_HEADERS[3]: [],
             "other": {},
             "all_data": 0,
             "warnings": warnings,
@@ -26,33 +29,27 @@ class Analyzator:
         if name not in self.analyzed_data["other"]:
             self.analyzed_data["other"][name] = []
 
-    def _bool_skip_row(self, header, data):
+    def _bool_skip_row(self, data):
         bool_wrong = False
-        if len(header) != len(data):
-            bool_wrong = True
-        for cell in range(len(header)):
-            if header[cell] == self.OBLIGATORY_HEADERS[0]:
+        for key, value in data.items():
+            if key == self.OBLIGATORY_HEADERS[0]:
                 try:
-                    datetime.fromisoformat(data[cell])
+                    datetime.fromisoformat(value)
                 except ValueError:
                     bool_wrong = True
-            elif header[cell] == self.OBLIGATORY_HEADERS[1]:
-                if data[cell] not in self.LEVEL_VALID:
+            elif key == self.OBLIGATORY_HEADERS[1]:
+                if value not in self.LEVEL_VALID:
                     bool_wrong = True
-            elif header[cell] == self.OBLIGATORY_HEADERS[2]:
-                if len(data[cell].replace(" ", "")) == 0 or type(data[cell]) is not str:
+            elif key == self.OBLIGATORY_HEADERS[2]:
+                if len(value.replace(" ", "")) == 0 or type(value) is not str:
                     bool_wrong = True
-            elif header[cell] == self.OBLIGATORY_HEADERS[3]:
-                if type(data[cell]) is not str:
+            elif key == self.OBLIGATORY_HEADERS[3]:
+                if type(value) is not str:
                     bool_wrong = True
             if bool_wrong and not self._bool_skip_invalid:
-                raise WrongObligatoryCellError(
-                    f"The stroke in '{header[cell]}' column has wrong type! (Now there: '{data[cell]}')"
-                )
+                raise WrongObligatoryCellError(f"The stroke in '{key}' column has wrong type! (Now there: '{value}')")
             elif bool_wrong:
-                self.analyzed_data["warnings"].append(
-                    f"WARNING: obligatory col '{header[cell]}' has invalid format: '{data[cell]}'"
-                )
+                self.analyzed_data["warnings"].append(f"WARNING: obligatory col '{key}' has invalid format: '{value}'")
                 return True
         return False
 
@@ -60,6 +57,9 @@ class Analyzator:
         for file_idx in range(len(data)):
             for row in range(len(data[file_idx])):
                 self.analyzed_data["all_data"] += 1
+                skip = self._bool_skip_row(data[file_idx][row])
+                if skip:
+                    continue
                 for key, value in data[file_idx][row].items():
                     if key == self.OBLIGATORY_HEADERS[0]:
                         self.analyzed_data[self.OBLIGATORY_HEADERS[0]].append(value)

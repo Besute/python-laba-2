@@ -10,10 +10,6 @@ class WrongObligatoryCellError(Exception):
     pass
 
 
-class ServerCreationError(Exception):
-    pass
-
-
 class InvalidExtensionError(Exception):
     pass
 
@@ -23,4 +19,12 @@ class InvalidValueError(Exception):
 
 
 class InvalidMethodError(Exception):
+    pass
+
+
+class ParserError(Exception):
+    pass
+
+
+class StreamStatsError(Exception):
     pass

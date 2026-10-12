@@ -8,6 +8,7 @@ from streamstats.Errors.errors import WrongPathError
 from streamstats.EventService.create_event import EventService
 from streamstats.Parsers.json_parser import BasicJsonParser
 from streamstats.ReportService.reporter import ReportService
+from streamstats.Validation.validation import Validation
 
 
 class Server(BasicJsonParser):
@@ -43,7 +44,21 @@ class Server(BasicJsonParser):
     @classmethod
     def __method_get(cls, data):
         event = EventService(data)
-        return event.create_event()
+        valid_files = []
+        validator = Validation()
+        for file in event.data_good_format:
+            bool_invalid = validator.check_rows_obligatory_cells(file)
+            if bool_invalid:
+                continue
+            valid_files.append(file)
+        if len(validator.invalid_files) == len(data["path"]):
+            raise InvalidValueError("You doesn't have valid files")
+        elif len(validator.invalid_files):
+            print(
+                f"Warning: in some of your files were omit these headers: {validator.invalid_files}, "
+                f"so some files weren't analyzed"
+            )
+        return event.analyze(valid_files)
 
     @classmethod
     def __method_post(cls, data):

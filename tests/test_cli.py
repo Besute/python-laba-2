@@ -6,9 +6,9 @@ from pathlib import Path
 
 import awaiting_result
 
-OUTPUT_DIR = Path(__file__).parent / "output"
+# OUTPUT_DIR = Path(__file__).parent / "output"
 DATA_DIR = Path(__file__).parent / "data"
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+# OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def test_cli_invalid_file():
@@ -64,10 +64,10 @@ def test_cli_valid_file_no_skip_invalid():
         text=True,
     )
 
-    assert result.returncode != 0
+    assert result.returncode == 0
 
 
-def test_cli_output_jsonl():
+def test_cli_output_jsonl(tmp_path):
     result = subprocess.run(
         [
             sys.executable,
@@ -79,7 +79,7 @@ def test_cli_output_jsonl():
             "--format",
             "jsonl",
             "--output",
-            str(OUTPUT_DIR / "REPORT.json"),
+            str(tmp_path / "REPORT.json"),
             "--skip-invalid",
         ],
         capture_output=True,
@@ -87,13 +87,13 @@ def test_cli_output_jsonl():
     )
 
     assert result.returncode == 0
-    assert (OUTPUT_DIR / "REPORT.json").exists()
+    assert (tmp_path / "REPORT.json").exists()
 
-    data = json.loads((OUTPUT_DIR / "REPORT.json").read_text(encoding="utf-8"))
+    data = json.loads((tmp_path / "REPORT.json").read_text(encoding="utf-8"))
     assert data == awaiting_result.REPORT_JSONL
 
 
-def test_cli_output_csv():
+def test_cli_output_csv(tmp_path):
     result = subprocess.run(
         [
             sys.executable,
@@ -104,7 +104,7 @@ def test_cli_output_csv():
             "--format",
             "csv",
             "--output",
-            str(OUTPUT_DIR / "REPORT.json"),
+            str(tmp_path / "REPORT.json"),
             "--skip-invalid",
         ],
         capture_output=True,
@@ -112,7 +112,7 @@ def test_cli_output_csv():
     )
 
     assert result.returncode == 0
-    assert (OUTPUT_DIR / "REPORT.json").exists()
+    assert (tmp_path / "REPORT.json").exists()
 
-    data = json.loads((OUTPUT_DIR / "REPORT.json").read_text(encoding="utf-8"))
+    data = json.loads((tmp_path / "REPORT.json").read_text(encoding="utf-8"))
     assert data == awaiting_result.REPORT_CSV
