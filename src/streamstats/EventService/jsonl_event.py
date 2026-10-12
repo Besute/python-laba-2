@@ -1,5 +1,5 @@
 from streamstats.AnalyzeService.analysis import JsnolAnalysis
-from streamstats.Parsers.parsers import BasicJsonParser
+from streamstats.Parsers.json_parser import BasicJsonParser
 
 
 class JsonlEvent(BasicJsonParser):

@@ -1,0 +1,4 @@
+timestamp,level,source,message
+timestamp,C2,C3,C4
+timestamp,level,source,message
+2023-10-11T14:30:00Z,ERROR,SOURCE_1,Four

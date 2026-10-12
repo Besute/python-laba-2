@@ -10,5 +10,17 @@ class WrongObligatoryCellError(Exception):
     pass
 
 
-class ParserCreationError(Exception):
+class ServerCreationError(Exception):
+    pass
+
+
+class InvalidExtensionError(Exception):
+    pass
+
+
+class InvalidValueError(Exception):
+    pass
+
+
+class InvalidMethodError(Exception):
     pass

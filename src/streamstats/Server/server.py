@@ -1,10 +1,12 @@
-import re
-
 from asyncio import sleep
 from pathlib import Path
 
+from streamstats.Errors.errors import InvalidExtensionError
+from streamstats.Errors.errors import InvalidMethodError
+from streamstats.Errors.errors import InvalidValueError
+from streamstats.Errors.errors import WrongPathError
 from streamstats.EventService.create_event import EventService
-from streamstats.Parsers.parsers import BasicJsonParser
+from streamstats.Parsers.json_parser import BasicJsonParser
 from streamstats.ReportService.reporter import ReportService
 
 
@@ -25,9 +27,9 @@ class Server(BasicJsonParser):
     async def __verify_handler(self, method, data=None):
         handler = self._handlers.get(method)
         if handler is None:
-            raise ValueError(f"Invalid method {method}")
+            raise InvalidMethodError(f"Invalid method {method}")
         if data is None:
-            raise ValueError("Invalid data")
+            raise InvalidValueError("Invalid data")
 
         if method == "GET":
             self._check_valid_type(data["type"])
@@ -41,8 +43,7 @@ class Server(BasicJsonParser):
     @classmethod
     def __method_get(cls, data):
         event = EventService(data)
-        event.create_event()
-        return event.analyzed_data
+        return event.create_event()
 
     @classmethod
     def __method_post(cls, data):
@@ -52,21 +53,22 @@ class Server(BasicJsonParser):
     @classmethod
     def _check_valid_type(cls, value):
         if value not in cls.VALID_TYPES:
-            raise ValueError(f"Invalid value {value}. Must be one of {cls.VALID_TYPES}")
+            raise InvalidValueError(f"Invalid value {value}. Must be one of {cls.VALID_TYPES}")
         return value
 
     @classmethod
     def _check_correct_filepath(cls, value, type_):
         correct_files = []
-        mask = "\\.[a-zA-Z]*"
+        curr_path = Path(__file__).resolve().parent.parent
 
         for file in value:
-            curr_path = Path(__file__).resolve().parent.parent
             curr_file = curr_path / file
-            after_dot = re.search(mask, file).group().replace(".", "")
-            if after_dot != type_:
-                raise ValueError(f"Invalid file extension: you have {type_}, but you need {after_dot}")
+            extension = file.split(".")[-1]
+            if extension.lower() != type_.lower():
+                raise InvalidExtensionError(
+                    f"Invalid file extension: expected {type_}, " f"but got {extension or 'no extension'}"
+                )
             if not curr_file.is_file():
-                raise ValueError(f"Invalid filepath {file}. File does not exist")
+                raise WrongPathError(f"Invalid filepath {file}. File does not exist")
             correct_files.append(curr_file)
         return correct_files

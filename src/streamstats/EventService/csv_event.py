@@ -1,5 +1,5 @@
 from streamstats.AnalyzeService.analysis import CsvAnalysis
-from streamstats.Parsers.parsers import BasicJsonParser
+from streamstats.Parsers.json_parser import BasicJsonParser
 
 
 class CsvEvent(BasicJsonParser):

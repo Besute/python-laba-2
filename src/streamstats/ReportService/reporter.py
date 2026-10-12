@@ -1,4 +1,4 @@
-from streamstats.Parsers.parsers import BasicJsonParser
+from streamstats.Parsers.json_parser import BasicJsonParser
 
 from .report_json import JsonReport
 
