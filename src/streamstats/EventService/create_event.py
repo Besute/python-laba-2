@@ -1,4 +1,5 @@
 from streamstats.Errors.errors import InvalidMethodError
+from streamstats.Parsers.parser import CURRENT_EVENTS
 
 from .csv_event import CsvEvent
 from .jsonl_event import JsonlEvent
@@ -11,13 +12,9 @@ class EventService:
         self.paths = data["path"]
         self.type = data["type"]
         self.skipInvalid = data["skipInvalid"]
-        self._handlers = {
-            "csv": self.process_csv,
-            "jsonl": self.process_jsonl,
-        }
 
     def create_event(self):
-        handler = self._handlers.get(self.type)
+        handler = CURRENT_EVENTS.get(self.type)
         if handler is None:
             raise InvalidMethodError("Invalid event type")
 

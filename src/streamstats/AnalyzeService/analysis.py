@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from streamstats.Errors.errors import OmitObligatoryFieldError
 from streamstats.Errors.errors import WrongObligatoryCellError
 
 
@@ -8,17 +7,13 @@ class Analyzator:
     OBLIGATORY_HEADERS = ["timestamp", "level", "source", "message"]
     LEVEL_VALID = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
-    def __init__(self, data, bool_skip_invalid):
-        self._data = data
+    def __init__(self, bool_skip_invalid):
         self._bool_skip_invalid = bool_skip_invalid
         warnings = None
         if bool_skip_invalid:
             warnings = []
         self.analyzed_data = {
             self.OBLIGATORY_HEADERS[0]: [],
-            self.OBLIGATORY_HEADERS[1]: [],
-            self.OBLIGATORY_HEADERS[2]: [],
-            self.OBLIGATORY_HEADERS[3]: [],
             "other": {},
             "all_data": 0,
             "warnings": warnings,
@@ -61,78 +56,9 @@ class Analyzator:
                 return True
         return False
 
-
-class CsvAnalysis(Analyzator):
-
-    def __init__(self, data, bool_skip_invalid):
-        super().__init__(data, bool_skip_invalid)
-
-    def analyze_csv(self):
-        headers = self._data["headers"]
-        data = self._data["data"]
-        for file_idx in range(len(data)):
-            self._check_table_headers(headers[file_idx])
-            for row in range(len(data[file_idx])):
-                skip = self._bool_skip_row(headers[file_idx], data[file_idx][row])
-                if skip:
-                    continue
-                self.analyzed_data["all_data"] += 1
-                for curr_cell in range(len(data[file_idx][row])):
-                    curr_cell_data = data[file_idx][row][curr_cell]
-                    curr_header = headers[file_idx][curr_cell]
-                    if curr_header == self.OBLIGATORY_HEADERS[0]:
-                        self.analyzed_data[self.OBLIGATORY_HEADERS[0]].append(curr_cell_data)
-                    elif curr_header == self.OBLIGATORY_HEADERS[1]:
-                        self.analyzed_data[self.OBLIGATORY_HEADERS[1]].append(curr_cell_data)
-                        if curr_cell_data not in self.analyzed_data["acc_of_every_level"]:
-                            self.analyzed_data["acc_of_every_level"][curr_cell_data] = 0
-                        self.analyzed_data["acc_of_every_level"][curr_cell_data] += 1
-                    elif curr_header == self.OBLIGATORY_HEADERS[2]:
-                        self.analyzed_data[self.OBLIGATORY_HEADERS[2]].append(curr_cell_data)
-                        if curr_cell_data not in self.analyzed_data["acc_of_every_source"]:
-                            self.analyzed_data["acc_of_every_source"][curr_cell_data] = 0
-                        self.analyzed_data["acc_of_every_source"][curr_cell_data] += 1
-                    elif curr_header == self.OBLIGATORY_HEADERS[3]:
-                        self.analyzed_data[self.OBLIGATORY_HEADERS[3]].append(curr_cell_data)
-                    else:
-                        self._add_new_col(curr_header)
-                        self.analyzed_data["other"][curr_header].append(curr_cell_data)
-        correct_date = list(map(datetime.fromisoformat, self.analyzed_data["timestamp"]))
-        self.analyzed_data["minmax_date"] = min(correct_date).isoformat(), max(correct_date).isoformat()
-        return self.analyzed_data
-
-    @classmethod
-    def _check_table_headers(cls, headers):
-        was_found = {
-            "timestamp": False,
-            "level": False,
-            "source": False,
-            "message": False,
-        }
-        for header in headers:
-            if header in cls.OBLIGATORY_HEADERS:
-                was_found[header] = True
-        error_fields = []
-        for key in was_found.keys():
-            if not was_found[key]:
-                error_fields.append(key)
-        if len(error_fields) > 0:
-            raise OmitObligatoryFieldError(f"These fields were omit in one of your CSV table: {error_fields}")
-
-
-class JsnolAnalysis(Analyzator):
-
-    def __init__(self, data, bool_skip_invalid):
-        super().__init__(data, bool_skip_invalid)
-
-    def analyze_jsonl(self):
-        data = self._data["data"]
+    def analyze(self, data):
         for file_idx in range(len(data)):
             for row in range(len(data[file_idx])):
-                self._check_row_oblig_cells(data[file_idx][row])
-                skip = self._bool_skip_row(list(data[file_idx][row].keys()), list(data[file_idx][row].values()))
-                if skip:
-                    continue
                 self.analyzed_data["all_data"] += 1
                 for key, value in data[file_idx][row].items():
                     if key == self.OBLIGATORY_HEADERS[0]:
@@ -155,27 +81,3 @@ class JsnolAnalysis(Analyzator):
         correct_date = list(map(datetime.fromisoformat, self.analyzed_data["timestamp"]))
         self.analyzed_data["minmax_date"] = min(correct_date).isoformat(), max(correct_date).isoformat()
         return self.analyzed_data
-
-    @classmethod
-    def _check_row_oblig_cells(cls, row):
-        was_found = {
-            "timestamp": False,
-            "level": False,
-            "source": False,
-            "message": False,
-        }
-        for key, item in row.items():
-            if key == "timestamp":
-                was_found["timestamp"] = True
-            elif key == "level":
-                was_found["level"] = True
-            elif key == "source":
-                was_found["source"] = True
-            elif key == "message":
-                was_found["message"] = True
-        error_fields = []
-        for key in was_found.keys():
-            if not was_found[key]:
-                error_fields.append(key)
-        if len(error_fields) > 0:
-            raise OmitObligatoryFieldError(f"These fields were omit in one of your JSONL rows: {error_fields}")
