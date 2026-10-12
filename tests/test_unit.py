@@ -4,6 +4,7 @@ import awaiting_result
 import pytest
 
 from streamstats.AnalyzeService.analysis import Analyzator
+from streamstats.Errors.errors import InvalidValueError
 from streamstats.Errors.errors import WrongObligatoryCellError
 from streamstats.Errors.errors import WrongPathError
 from streamstats.EventService.create_event import EventService
@@ -62,7 +63,7 @@ def test_jsonl_event():
 
 def test_csv_event_incorrect():
     data = {
-        "path": [DATA_DIR / "input.csv"],
+        "path": [str(DATA_DIR / "input.csv")],
         "skipInvalid": "false",
         "type": "csv",
     }
@@ -74,7 +75,7 @@ def test_csv_event_incorrect():
 
 def test_jsonl_event_incorrect():
     data = {
-        "path": [DATA_DIR / "input.jsonl"],
+        "path": [str(DATA_DIR / "input.jsonl")],
         "skipInvalid": "false",
         "type": "jsonl",
     }
@@ -82,3 +83,27 @@ def test_jsonl_event_incorrect():
     analyzator = Analyzator(False)
     with pytest.raises(WrongObligatoryCellError):
         analyzator.analyze(event.data_good_format)
+
+
+@pytest.mark.asyncio
+async def test_empty_jsonl():
+    data = {
+        "path": [str(DATA_DIR / "empty.jsonl")],
+        "skipInvalid": False,
+        "type": "jsonl",
+    }
+    server = Server("1111.txt")
+    with pytest.raises(InvalidValueError):
+        await server.make_request(GetJson(data))
+
+
+@pytest.mark.asyncio
+async def test_empty_csv():
+    data = {
+        "path": [str(DATA_DIR / "empty.csv")],
+        "skipInvalid": False,
+        "type": "csv",
+    }
+    server = Server("1111.txt")
+    with pytest.raises(InvalidValueError):
+        await server.make_request(GetJson(data))
