@@ -2,9 +2,10 @@ import json
 
 from pathlib import Path
 
+from .base_for_report import ReportSkeleton
 
-class JsonReport:
-    STANDARD_FILEPATH = "output/REPORT.json"
+
+class JsonReport(ReportSkeleton):
 
     def __init__(self, data, output):
         self._data = data

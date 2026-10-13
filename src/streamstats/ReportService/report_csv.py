@@ -2,9 +2,10 @@ import csv
 
 from pathlib import Path
 
+from .base_for_report import ReportSkeleton
 
-class CsvReport:
-    STANDARD_FILEPATH = "output/REPORT.csv"
+
+class CsvReport(ReportSkeleton):
 
     def __init__(self, data, output):
         self._data = data
