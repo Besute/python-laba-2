@@ -1,7 +1,9 @@
 from streamstats.Parsers.json_parser import BasicJsonParser
 
+from .base_for_event import EventSkeleton
 
-class CsvEvent(BasicJsonParser):
+
+class CsvEvent(BasicJsonParser, EventSkeleton):
     def __init__(self, paths, bool_skip_invalid):
         self._paths = paths
         self._bool_skip_invalid = bool_skip_invalid

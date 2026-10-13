@@ -1,7 +1,9 @@
 from streamstats.Parsers.json_parser import BasicJsonParser
 
+from .base_for_event import EventSkeleton
 
-class JsonlEvent(BasicJsonParser):
+
+class JsonlEvent(BasicJsonParser, EventSkeleton):
 
     def __init__(self, paths, bool_skip_invalid):
         self._paths = paths
