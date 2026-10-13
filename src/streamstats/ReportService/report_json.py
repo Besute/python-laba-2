@@ -12,8 +12,10 @@ class JsonReport:
         self._filename = output
 
     def create_file(self):
-        if self._filename == self.STANDARD_FILEPATH:
-            path_of_outputdir = Path(__file__).resolve().parent.parent.joinpath("output")
+        idx_of_first_slash = self._filename.rfind("/")
+        if idx_of_first_slash != -1:
+            path_no_file = self._filename[:idx_of_first_slash]
+            path_of_outputdir = Path(__file__).resolve().parent.parent.joinpath(path_no_file)
             if not path_of_outputdir.exists():
                 path_of_outputdir.mkdir(parents=True, exist_ok=True)
         if not self.__output_path.exists():
