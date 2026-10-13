@@ -1,5 +1,6 @@
 from streamstats.Parsers.json_parser import BasicJsonParser
 
+from .report_csv import CsvReport
 from .report_json import JsonReport
 
 
@@ -48,4 +49,5 @@ class ReportService(BasicJsonParser):
 
     @classmethod
     def _csv_report(cls, output: str, data: dict):
-        pass
+        csv_reporter = CsvReport(data, output)
+        csv_reporter.write_output_file()

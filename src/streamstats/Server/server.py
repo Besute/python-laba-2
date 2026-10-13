@@ -63,7 +63,10 @@ class Server(BasicJsonParser):
     @classmethod
     def __method_post(cls, data):
         reporter = ReportService(data["data"])
-        reporter.make_report(data["output"])
+        idx_of_extension = data["output"].rfind(".")
+        output_no_extension = data["output"][:idx_of_extension]
+        reporter.make_report(output_no_extension + ".json")
+        reporter.make_report(output_no_extension + ".csv")
 
     @classmethod
     def _check_valid_type(cls, value):

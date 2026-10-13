@@ -3,3 +3,4 @@ src/streamstats/data
 **/__pycache__
 src/streamstats/output/*
 tests/output
+tests/data/large.jsonl

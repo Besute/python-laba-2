@@ -10,7 +10,6 @@ class JsonReport:
         self._data = data
         self.__output_path = Path(__file__).resolve().parent.parent.joinpath(output)
         self._filename = output
-        self.create_file()
 
     def create_file(self):
         if self._filename == self.STANDARD_FILEPATH:
