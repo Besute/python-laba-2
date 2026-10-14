@@ -68,7 +68,7 @@ def test_csv_event_incorrect():
         "type": "csv",
     }
     event = EventService(data)
-    analyzator = Analyzator(False)
+    analyzator = Analyzator(False, [False])
     with pytest.raises(WrongObligatoryCellError):
         analyzator.analyze(event.data_good_format)
 
@@ -80,7 +80,7 @@ def test_jsonl_event_incorrect():
         "type": "jsonl",
     }
     event = EventService(data)
-    analyzator = Analyzator(False)
+    analyzator = Analyzator(False, [False])
     with pytest.raises(WrongObligatoryCellError):
         analyzator.analyze(event.data_good_format)
 
@@ -106,4 +106,28 @@ async def test_empty_csv():
     }
     server = Server("1111.txt")
     with pytest.raises(InvalidValueError):
+        await server.make_request(GetJson(data))
+
+
+@pytest.mark.asyncio
+async def test_incorrect_cell_csv():
+    data = {
+        "path": [str(DATA_DIR / "incorrect_cell.csv")],
+        "skipInvalid": False,
+        "type": "csv",
+    }
+    server = Server("1111.txt")
+    with pytest.raises(WrongObligatoryCellError):
+        await server.make_request(GetJson(data))
+
+
+@pytest.mark.asyncio
+async def test_incorrect_cell_jsonl():
+    data = {
+        "path": [str(DATA_DIR / "incorrect_cell.jsonl")],
+        "skipInvalid": False,
+        "type": "jsonl",
+    }
+    server = Server("1111.txt")
+    with pytest.raises(WrongObligatoryCellError):
         await server.make_request(GetJson(data))

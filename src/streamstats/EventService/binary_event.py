@@ -26,12 +26,22 @@ class BinaryEvent(EventSkeleton):
         result = []
         self._big_data = []
         for path in self.paths:
-            path = Path(path)
             try:
-                self._big_data.append(path.stat().st_size >= self.BIG_FILE_SIZE)
+                if Path(path).stat().st_size >= self.BIG_FILE_SIZE:
+                    self._big_data.append(True)
+                else:
+                    self._big_data.append(False)
+                all_data = b""
                 with path.open("rb") as file:
-                    data = file.read()
-                result.append(self._parse(data))
+                    data = file.readline()
+                    acc = 0
+                    while data:
+                        if acc % self.PERIOD_OF_DISPLAY == 0 and self._big_data[-1]:
+                            print("Total memory used during transforming data:", self.memory)
+                        all_data += data
+                        data = file.readline()
+                        acc += 1
+                result.append(self._parse(all_data))
             except (OSError, ValueError, struct.error) as e:
                 if self.skip_invalid:
                     result.append(None)

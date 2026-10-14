@@ -1,10 +1,11 @@
+from pathlib import Path
+
 from streamstats.Parsers.json_parser import BasicJsonParser
 
 from .base_for_event import EventSkeleton
 
 
 class JsonlEvent(BasicJsonParser, EventSkeleton):
-    PERIOD_OF_DISPLAY = 100_000
 
     def __init__(self, paths, bool_skip_invalid):
         self._paths = paths
@@ -16,7 +17,7 @@ class JsonlEvent(BasicJsonParser, EventSkeleton):
         final_data = []
         for path in self._paths:
             with open(path) as jsonfile:
-                if path.stat().st_size >= self.BIG_FILE_SIZE:
+                if Path(path).stat().st_size >= self.BIG_FILE_SIZE:
                     self._bool_big_data.append(True)
                 else:
                     self._bool_big_data.append(False)

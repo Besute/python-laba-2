@@ -25,7 +25,7 @@ def test_cli_invalid_file():
         capture_output=True,
         text=True,
     )
-    assert result.returncode != 0
+    assert result.returncode == 2
 
 
 def test_cli_valid_file():
@@ -64,7 +64,7 @@ def test_cli_valid_file_no_skip_invalid():
         text=True,
     )
 
-    assert result.returncode == 0
+    assert result.returncode == 2
 
 
 def test_cli_output_jsonl(tmp_path):

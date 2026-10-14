@@ -7,6 +7,7 @@ from streamstats.MemoryCounter.memory_count import CreateVirtualMemory
 
 class EventSkeleton(ABC, CreateVirtualMemory):
     BIG_FILE_SIZE = 500 * 1024 * 1024
+    PERIOD_OF_DISPLAY = 100_000
 
     @abstractmethod
     def read(self):

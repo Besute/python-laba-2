@@ -45,6 +45,7 @@ class Server(BasicJsonParser):
     @classmethod
     def __method_get(cls, data):
         event = EventService(data)
+        print(event.data_good_format)
         valid_files = []
         validator = Validation()
         for file in event.data_good_format:

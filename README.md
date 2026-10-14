@@ -19,9 +19,16 @@
 <p style="font-size: 16px">Use "python -m streamstats analyze [--FILENAMES...] --format (csv/jsonl)"</p>
 <p style="font-size: 16px">this code will analyze your data and report it to output/REPORT.json inside the project. However, if you have
 some errors in obligatory fields, the program won't finish analizing and will finish with error</p>
-<h3>Flags:</h3>
+<h3>Flags</h3>
 <p style="font-size: 16px">To set validation of obligatory fields use "--skip-valid" flag</p>
 <p style="font-size: 16px">To set your report destination use "--output PATH" flag</p>
 <h2>Setup</h2>
 <p style="font-size: 16px">Use poetry for this package. You can install it in browser
 or directly in your IDE</p>
+<p style="font-size: 16px">Run "poetry install" to install the package</p>
+<p style="font-size: 16px">Run "poetry sync" to sync all dependencies to the required version</p>
+<h2>Additional</h2>
+<p style="font-size: 16px">You can fork this project and add new
+format to be analyzed. To do that go to src/streamstats/EventService/base_for_event.py to see skeleton of file what is needed to be written</p>
+<p style="font-size: 16px">Then go to the parsers and add you new analyzer to the EVENT by given function</p>
+<p style="font-size: 16px">!NOTE! Your parses should do the special format that other parsers do. You can see it by printing them in the server's file</p>
