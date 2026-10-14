@@ -7,12 +7,13 @@ from streamstats.Errors.errors import InvalidValueError
 from streamstats.Errors.errors import WrongPathError
 from streamstats.EventService.create_event import EventService
 from streamstats.Parsers.json_parser import BasicJsonParser
+from streamstats.Parsers.parser import EVENTS
 from streamstats.ReportService.reporter import ReportService
 from streamstats.Validation.validation import Validation
 
 
 class Server(BasicJsonParser):
-    VALID_TYPES = ["csv", "jsonl"]
+    VALID_TYPES = list(EVENTS.keys())
 
     def __init__(self, output):
         self.output = output

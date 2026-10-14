@@ -34,7 +34,7 @@ def create_parser():
     analyze_parser = subparsers.add_parser("analyze")
     analyze_parser.add_argument("FILE", type=str, nargs="+", help="files to analyze")
     analyze_parser.add_argument(
-        "--format", type=str, required=True, choices=["csv", "jsonl"], help="format of input files"
+        "--format", type=str, required=True, choices=["csv", "jsonl", "bin"], help="format of input files"
     )
     analyze_parser.add_argument("--output", type=str, default="output/REPORT.json", help="output file")
     analyze_parser.add_argument("--skip-invalid", action="store_true", help="skip invalid rows")

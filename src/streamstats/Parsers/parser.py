@@ -1,4 +1,5 @@
 from streamstats.Errors.errors import ParserError
+from streamstats.EventService.binary_event import BinaryEvent
 from streamstats.EventService.csv_event import CsvEvent
 from streamstats.EventService.jsonl_event import JsonlEvent
 
@@ -20,5 +21,10 @@ def parse_jsonl(paths, skip_invalid=False):
     return JsonlEvent(paths, skip_invalid).read()
 
 
+def parse_binary(paths, skip_invalid=False):
+    return BinaryEvent(paths, skip_invalid).read()
+
+
 register_parser("csv", parse_csv)
 register_parser("jsonl", parse_jsonl)
+register_parser("bin", parse_binary)

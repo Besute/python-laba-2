@@ -16,7 +16,7 @@ class JsonlEvent(BasicJsonParser, EventSkeleton):
         final_data = []
         for path in self._paths:
             with open(path) as jsonfile:
-                if path.stat().st_size >= 500 * 1024 * 1024:
+                if path.stat().st_size >= self.BIG_FILE_SIZE:
                     self._bool_big_data.append(True)
                 else:
                     self._bool_big_data.append(False)
