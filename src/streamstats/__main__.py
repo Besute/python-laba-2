@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import sys
 
 from streamstats.Parsers.json_parser import BasicJsonParser
 from streamstats.Server.server import Server
@@ -67,5 +68,7 @@ async def main():
 if __name__ == "__main__":
     try:
         asyncio.run(main())
+        sys.exit(0)
     except Exception as e:
         print(e)
+        sys.exit(2)

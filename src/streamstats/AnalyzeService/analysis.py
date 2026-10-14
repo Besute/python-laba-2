@@ -6,8 +6,8 @@ from streamstats.MemoryCounter.memory_count import CreateVirtualMemory
 
 
 class Analyzator:
-    OBLIGATORY_HEADERS = ["timestamp", "level", "source", "message"]
-    LEVEL_VALID = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+    OBLIGATORY_HEADERS = ("timestamp", "level", "source", "message")
+    LEVEL_VALID = ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL")
 
     def __init__(self, bool_skip_invalid, bool_big_data):
         self._bool_skip_invalid = bool_skip_invalid
@@ -32,7 +32,7 @@ class Analyzator:
         if name not in self.analyzed_data["other"]:
             self.analyzed_data["other"][name] = []
 
-    def _bool_skip_row(self, data):
+    def _bool_skip_row(self, data, file_idx):
         bool_wrong = False
         for key, value in data.items():
             if key == self.OBLIGATORY_HEADERS[0]:
@@ -46,13 +46,16 @@ class Analyzator:
             elif key == self.OBLIGATORY_HEADERS[2]:
                 if len(value.replace(" ", "")) == 0 or type(value) is not str:
                     bool_wrong = True
-            elif key == self.OBLIGATORY_HEADERS[3]:
-                if type(value) is not str:
-                    bool_wrong = True
+            elif key == self.OBLIGATORY_HEADERS[3] and type(value) is not str:
+                bool_wrong = True
             if bool_wrong and not self._bool_skip_invalid:
-                raise WrongObligatoryCellError(f"The stroke in '{key}' column has wrong type! (Now there: '{value}')")
+                raise WrongObligatoryCellError(
+                    f"File №{file_idx + 1}! The stroke in '{key}' column has wrong type! (Now there: '{value}')"
+                )
             elif bool_wrong:
-                self.analyzed_data["warnings"].append(f"WARNING: obligatory col '{key}' has invalid format: '{value}'")
+                self.analyzed_data["warnings"].append(
+                    f"File №{file_idx + 1}! WARNING: obligatory col '{key}' has invalid format: '{value}'"
+                )
                 return True
         return False
 
@@ -66,7 +69,7 @@ class Analyzator:
                 if row % 10000 == 0 and memory_counter is not None:
                     print("Total memory used during analization:", memory_counter.memory)
                 self.analyzed_data["all_data"] += 1
-                skip = self._bool_skip_row(data[file_idx][row])
+                skip = self._bool_skip_row(data[file_idx][row], file_idx)
                 if skip:
                     continue
                 for key, value in data[file_idx][row].items():
