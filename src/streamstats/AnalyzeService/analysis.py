@@ -3,6 +3,7 @@ from datetime import datetime
 from streamstats.Errors.errors import InvalidValueError
 from streamstats.Errors.errors import WrongObligatoryCellError
 from streamstats.MemoryCounter.memory_count import CreateVirtualMemory
+from streamstats.Parsers.str_parser import ReplaceChars
 
 
 class Analyzator:
@@ -34,6 +35,7 @@ class Analyzator:
 
     def _bool_skip_row(self, data, file_idx):
         bool_wrong = False
+        replacer = ReplaceChars(" ")
         for key, value in data.items():
             if key == self.OBLIGATORY_HEADERS[0]:
                 try:
@@ -44,7 +46,7 @@ class Analyzator:
                 if value not in self.LEVEL_VALID:
                     bool_wrong = True
             elif key == self.OBLIGATORY_HEADERS[2]:
-                if len(value.replace(" ", "")) == 0 or type(value) is not str:
+                if len(replacer(value)) == 0 or type(value) is not str:
                     bool_wrong = True
             elif key == self.OBLIGATORY_HEADERS[3] and type(value) is not str:
                 bool_wrong = True
@@ -67,7 +69,7 @@ class Analyzator:
                 memory_counter = CreateVirtualMemory()
             for row in range(len(data[file_idx])):
                 if row % 10000 == 0 and memory_counter is not None:
-                    print("Total memory used during analization:", memory_counter.memory)
+                    print("Total memory used during analyzation:", memory_counter.memory)
                 self.analyzed_data["all_data"] += 1
                 skip = self._bool_skip_row(data[file_idx][row], file_idx)
                 if skip:

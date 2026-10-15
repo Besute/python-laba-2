@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from streamstats.Parsers.json_parser import BasicJsonParser
+from streamstats.Parsers.str_parser import StripChars
 
 from .base_for_event import EventSkeleton
 
@@ -16,6 +17,7 @@ class CsvEvent(BasicJsonParser, EventSkeleton):
     def read(self):
         all_headers = []
         all_data = []
+        stripper = StripChars("\n")
         for path in self._paths:
             with open(path) as csvfile:
                 if Path(path).stat().st_size >= self.BIG_FILE_SIZE:
@@ -31,9 +33,9 @@ class CsvEvent(BasicJsonParser, EventSkeleton):
                     if acc % self.PERIOD_OF_DISPLAY == 0 and self._bool_big_data[-1]:
                         print("Total memory used during transforming data:", self.memory)
                     if acc == 0:
-                        headers = line.replace("\n", "").split(",")
+                        headers = stripper(line).split(",")
                     else:
-                        splited_data = line.replace("\n", "").split(",")
+                        splited_data = stripper(line).split(",")
                         for cell in range(len(headers)):
                             data_of_line[headers[cell]] = splited_data[cell]
                         data.append(data_of_line)
