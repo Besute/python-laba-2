@@ -7,7 +7,7 @@ from .base_for_event import EventSkeleton
 
 class JsonlEvent(BasicJsonParser, EventSkeleton):
 
-    def __init__(self, paths, bool_skip_invalid):
+    def __init__(self, paths, bool_skip_invalid, *kwargs):
         self._paths = paths
         self._bool_skip_invalid = bool_skip_invalid
         self._bool_big_data = []

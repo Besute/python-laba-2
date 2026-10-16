@@ -10,6 +10,9 @@ class EventService:
         self.paths = data["path"]
         self.type = data["type"]
         self.skipInvalid = data["skipInvalid"]
+        self.separator = data["separator"]
+        if self.separator == "":
+            self.separator = None
         self.data_good_format, self.__bool_big_data = self.create_event()
 
     def analyze(self, data):
@@ -20,4 +23,4 @@ class EventService:
         if handler is None:
             raise InvalidMethodError("Invalid event type")
 
-        return handler(self.paths, self.skipInvalid)
+        return handler(self.paths, self.skipInvalid, separator=self.separator)

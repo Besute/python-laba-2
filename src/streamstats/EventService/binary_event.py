@@ -12,7 +12,7 @@ class BinaryEvent(EventSkeleton):
     VERSION = 1
     HEADER_SIZE = 9
 
-    def __init__(self, paths, skip_invalid=False):
+    def __init__(self, paths, skip_invalid=False, **kwargs):
         self.paths = paths
         self.skip_invalid = skip_invalid
         self._big_data = []

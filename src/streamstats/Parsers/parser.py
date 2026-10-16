@@ -13,8 +13,8 @@ def register_parser(name, parser_func):
     EVENTS[name] = parser_func
 
 
-def parse_csv(paths, skip_invalid=False):
-    return CsvEvent(paths, skip_invalid).read()
+def parse_csv(paths, skip_invalid=False, separator=","):
+    return CsvEvent(paths, skip_invalid, separator=separator).read()
 
 
 def parse_jsonl(paths, skip_invalid=False):

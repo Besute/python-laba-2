@@ -36,6 +36,7 @@ def create_parser():
     analyze_parser.add_argument(
         "--format", type=str, required=True, choices=["csv", "jsonl", "bin"], help="format of input files"
     )
+    analyze_parser.add_argument("--separator", type=str, help="What kind of separator in CSV to use", default="")
     analyze_parser.add_argument("--output", type=str, default="output/REPORT.json", help="output file")
     analyze_parser.add_argument("--skip-invalid", action="store_true", help="skip invalid rows")
     # analyze_parser.add_argument("--add-to-prev-data", action="store_true", help="add new data to previous data", default=False)
@@ -47,11 +48,16 @@ async def main():
     parser = create_parser()
     args = parser.parse_args()
     try:
+        if args.separator != "" and args.format != "csv":
+            raise StreamStatsError(f"You can't choose separator for {args.format}")
+        elif args.separator == "" and args.format == "csv":
+            raise StreamStatsError("You didn't choose separator for csv")
         if args.command == "analyze":
             get_request = GetJson(
                 {
                     "path": args.FILE,
                     "type": args.format,
+                    "separator": args.separator,
                     "skipInvalid": args.skip_invalid,
                 }
             )

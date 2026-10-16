@@ -8,10 +8,13 @@ from .base_for_event import EventSkeleton
 
 class CsvEvent(BasicJsonParser, EventSkeleton):
 
-    def __init__(self, paths, bool_skip_invalid):
+    def __init__(self, paths, bool_skip_invalid, **kwargs):
         self._paths = paths
         self._bool_skip_invalid = bool_skip_invalid
         self._bool_big_data = []
+        self.separator = kwargs.get("separator")
+        if self.separator is None:
+            self.separator = ","
         super().__init__()
 
     def read(self):
@@ -33,9 +36,9 @@ class CsvEvent(BasicJsonParser, EventSkeleton):
                     if acc % self.PERIOD_OF_DISPLAY == 0 and self._bool_big_data[-1]:
                         print("Total memory used during transforming data:", self.memory)
                     if acc == 0:
-                        headers = stripper(line).split(",")
+                        headers = stripper(line).split(self.separator)
                     else:
-                        splited_data = stripper(line).split(",")
+                        splited_data = stripper(line).split(self.separator)
                         for cell in range(len(headers)):
                             data_of_line[headers[cell]] = splited_data[cell]
                         data.append(data_of_line)
