@@ -20,6 +20,7 @@
 <p style="font-size: 16px">this code will analyze your data and report it to output/REPORT.json inside the project. However, if you have
 some errors in required fields, the program won't finish analizing and will finish with error</p>
 <h3>Flags</h3>
+<p style="font-size: 16px">!!!To set your separator for csv file use "--separator YOUR_SEPARATOR"</p>
 <p style="font-size: 16px">To set validation of obligatory fields use "--skip-valid" flag</p>
 <p style="font-size: 16px">To set your report destination use "--output PATH" flag</p>
 <h2>Setup</h2>
