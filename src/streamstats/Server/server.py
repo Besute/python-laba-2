@@ -3,6 +3,7 @@ from pathlib import Path
 
 from streamstats.Errors.errors import InvalidExtensionError
 from streamstats.Errors.errors import InvalidMethodError
+from streamstats.Errors.errors import InvalidOutputError
 from streamstats.Errors.errors import InvalidValueError
 from streamstats.Errors.errors import WrongPathError
 from streamstats.EventService.create_event import EventService
@@ -61,13 +62,20 @@ class Server(BasicJsonParser):
             )
         return event.analyze(valid_files)
 
-    @classmethod
-    def __method_post(cls, data):
+    def __method_post(self, data):
         reporter = ReportService(data["data"])
-        idx_of_extension = data["output"].rfind(".")
-        output_no_extension = data["output"][:idx_of_extension]
-        reporter.make_report(output_no_extension + ".json")
-        reporter.make_report(output_no_extension + ".csv")
+        idx_of_extension = self.output.rfind(".")
+        output_no_extension = self.output[:idx_of_extension]
+        print(output_no_extension)
+        output_extension = self.output[idx_of_extension + 1 :]
+        if output_extension == "json":
+            reporter.make_report(output_no_extension + ".json")
+        elif output_extension == "csv":
+            reporter.make_report(output_no_extension + ".csv")
+        else:
+            raise InvalidOutputError(
+                f"You can't choose {output_extension} for output file. Please choose one of: json, csv"
+            )
 
     @classmethod
     def _check_valid_type(cls, value):

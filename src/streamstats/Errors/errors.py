@@ -28,3 +28,7 @@ class ParserError(Exception):
 
 class StreamStatsError(Exception):
     pass
+
+
+class InvalidOutputError(Exception):
+    pass
