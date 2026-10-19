@@ -10,7 +10,7 @@ class EventService:
         self.paths = data["path"]
         self.type = data["type"]
         self.skipInvalid = data["skipInvalid"]
-        self.separator = data["separator"]
+        self.separator = data.get("separator", "")
         if self.separator == "":
             self.separator = None
         self.data_good_format, self.__bool_big_data = self.create_event()

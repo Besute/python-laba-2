@@ -103,6 +103,8 @@ def test_cli_output_csv(tmp_path):
             str(DATA_DIR / "input.csv"),
             "--format",
             "csv",
+            "--separator",
+            ",",
             "--output",
             str(tmp_path / "REPORT.json"),
             "--skip-invalid",

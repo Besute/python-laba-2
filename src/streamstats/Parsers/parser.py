@@ -17,7 +17,7 @@ def parse_csv(paths, skip_invalid=False, separator=","):
     return CsvEvent(paths, skip_invalid, separator=separator).read()
 
 
-def parse_jsonl(paths, skip_invalid=False):
+def parse_jsonl(paths, skip_invalid=False, separator=","):
     return JsonlEvent(paths, skip_invalid).read()
 
 
